@@ -1,0 +1,269 @@
+" ================ Vundle Config ====================
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/Vundle.vim
+call vundle#begin()
+Plugin 'gmarik/Vundle.vim'                               " Vundle, the plug-in manager for Vim
+" ---------------- better editing --------------------
+"Plugin 'ervandew/supertab'                               " insert mode completions with Tab
+Plugin 'scrooloose/syntastic'                            " Syntax checking hacks for vim
+Plugin 'Valloric/YouCompleteMe'                          " A code-completion engine for Vim. Remember to recompile after update
+Plugin 'jeffkreeftmeijer/vim-numbertoggle'               " Toggles between relative and absolute line numbers automatically
+Plugin 'vim-scripts/Tabmerge'                            " Merge a tab's windows with the current tab
+Plugin 'jiangmiao/auto-pairs'                            " insert or delete brackets, parens, quotes in pair
+"Plugin 'Townk/vim-autoclose'                             " auto-close chars
+Plugin 'machakann/vim-swap'                              " Reorder delimited items.
+" ---------------- references --------------------
+Plugin 'rizzatti/dash.vim'                               " Search Dash.app from Vim
+" ---------------- better display --------------------
+Plugin 'bling/vim-airline'                               " status/tabline
+Plugin 'majutsushi/tagbar'                               " displays tags
+Plugin 'scrooloose/nerdtree'                             " tree explorer
+Plugin 'miyakogi/conoline.vim'                           " Highlights the line of the cursor
+"Plugin 'gorodinskiy/vim-coloresque'                      " css/less/sass/html color preview for vim
+Plugin 'nathanaelkane/vim-indent-guides'                 " A Vim plugin for visually displaying indent levels in code
+Plugin 'kien/rainbow_parentheses.vim'                    " Better Rainbow Parentheses
+" ---------------- Special ---------------------------
+Plugin 'lervag/vimtex'                                   " latex in vim
+" ---------------- colorschemes --------------------
+Plugin 'vim-scripts/vim-colorscheme-switcher'
+Plugin 'xolox/vim-misc'                                  " vim-colorscheme-swither dependency
+Plugin 'chriskempson/base16-vim'
+Plugin 'altercation/vim-colors-solarized'
+Plugin 'crusoexia/vim-monokai'
+Plugin 'morhetz/gruvbox'
+Plugin 'w0ng/vim-hybrid'
+Plugin 'tomasr/molokai'
+Plugin 'michalbachowski/vim-wombat256mod'
+Plugin '29decibel/codeschool-vim-theme'
+Plugin 'effkay/argonaut.vim'
+Plugin 'chriskempson/vim-tomorrow-theme'
+Plugin 'vim-airline/vim-airline-themes'
+Plugin 'NLKNguyen/papercolor-theme'
+Plugin 'rakr/vim-one'
+" ---------------- syntax files --------------------
+Plugin 'vim-jp/vim-java'
+Plugin 'toyamarinyon/vim-swift'
+Plugin 'octol/vim-cpp-enhanced-highlight'
+Plugin 'skammer/vim-css-color'
+Plugin 'cakebaker/scss-syntax.vim'
+Plugin 'jelera/vim-javascript-syntax'
+Plugin 'takac/vim-fontmanager'
+Plugin 'derekwyatt/vim-scala'
+Plugin 'vim-scripts/haskell.vim'
+Plugin 'guns/vim-clojure-static'
+Plugin 'guns/vim-clojure-highlight'
+Plugin 'othree/html5.vim'
+Plugin 'digitaltoad/vim-pug'
+call vundle#end()
+filetype plugin indent on
+
+" ================ Vundle Bundles ====================
+" ---------------- airline setup --------------------
+set laststatus=2
+"fix whitespace mixed-indent warning
+let g:airline#extensions#whitespace#mixed_indent_algo = 1
+let g:airline#extensions#whitespace#enabled = 0
+let g:airline_right_alt_sep = ''
+let g:airline_right_sep = ''
+let g:airline_left_alt_sep= ''
+let g:airline_left_sep = ''
+
+" ---------------- tagbar setup --------------------
+nmap <C-b> :TagbarToggle<CR>
+let g:tagbar_singleclick = 1
+autocmd FileType c,cpp,java,python nested :TagbarOpen
+
+" ---------------- javacomplete 2 setup --------------------
+"autocmd FileType java set omnifunc=javacomplete#Complete
+"imap <F4> <Plug>(JavaComplete-Imports-Add)
+"imap <F4> <Plug>(JavaComplete-Imports-RemoveUnused)
+"nmap <F4> <Plug>(JavaComplete-Imports-Add)
+"nmap <F4> <Plug>(JavaComplete-Imports-RemoveUnused)
+
+" ---------------- NERDTree setup --------------------
+autocmd StdinReadPre * let s:std_in=1
+autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTreeType") && b:NERDTreeType == "primary") | q | endif
+map <C-t> :NERDTreeToggle<CR>
+
+" ---------------- indentLine setup --------------------
+let g:indentLine_char = '|'
+let g:indentLine_color_term = 239
+
+" ---------------- conoline setup --------------------
+let g:conoline_auto_enable = 1
+let g:conoline_use_colorscheme_default_insert=1
+let g:conoline_use_colorscheme_default_normal=1
+let g:conoline_color_normal_dark = 'guibg=#333333 guifg=#dddddd gui=None '
+			\. 'ctermbg=grey ctermfg=white'
+let g:conoline_color_insert_dark = 'guibg=black guifg=white gui=bold '
+			\. 'ctermbg=black ctermfg=white'
+
+" ---------------- cpp-enhanced-highlight setup --------------------
+let g:cpp_class_scope_highlight = 1
+
+" ---------------- syntastic setup --------------------
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 0
+let g:syntastic_check_on_wq = 1
+let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': [] }
+nnoremap <C-w>E :SyntasticCheck<CR> :SyntasticToggleMode<CR>
+
+" ---------------- youcompleteme setup --------------------
+let g:ycm_python_binary_path = 'python'
+
+" ---------------- delimitMate setup --------------------
+let delimitMate_balance_matchpairs = 1
+let delimitMate_jump_expansion = 1
+let delimitMate_expand_cr = 1
+"let delimitMate_autoclose = 0
+
+" ---------------- AutoClose setup --------------------
+let g:AutoClosePairs = "() {} \""
+let g:AutoClosePairs_add = "<> |"
+
+" ---------------- vim-clojure setup ---------------------
+let g:clojure_align_multiline_strings = 1
+let g:clojure_align_subforms = 1
+
+autocmd Syntax clojure EnableSyntaxExtension
+autocmd VimEnter *       RainbowParenthesesToggle
+autocmd Syntax   clojure RainbowParenthesesLoadRound
+autocmd Syntax   clojure RainbowParenthesesLoadSquare
+autocmd Syntax   clojure RainbowParenthesesLoadBraces
+
+" ================ General Config ====================
+set number                     " have linenumber
+set relativenumber             " relative to current line
+set backspace=indent,eol,start " allow backspace in insert mode
+set history=1000               " store lots of :cmdline history
+set showcmd                    " Show incomplete cmds down the bottom
+set showmode                   " Show current mode down the bottom
+set gcr=a:blinkon0             " Disable cursor blink
+set autoread                   " Reload files changed outside vim
+syntax on                      " turn on syntax highlighting
+set mouse=a                    " mouse mode
+
+" This makes vim act like all other editors, buffers can
+" exist in the background without being in a window.
+" http://items.sjbach.com/319/configuring-vim-right
+set hidden
+
+set timeoutlen=50              " eliminate delay on ESC
+
+" ================ Indentation ====================
+set autoindent
+set cindent
+set smarttab
+set shiftwidth=4
+set tabstop=4
+set expandtab
+autocmd FileType text set textwidth=0 " prevent autoload some file to break anyline longer than 78 chars
+
+" Auto indent pasted text
+nnoremap p p=`]<C-o>
+nnoremap P P=`]<C-o>
+
+filetype plugin on
+filetype indent on
+
+" Display tabs (space at the end of line)
+"set list lcs=tab:\¦\ 
+
+set nowrap       " don't wrap lines
+set linebreak    " Wrap lines at convenient points
+
+" Removes trailing whitespaces automatically when called `:w` in resp. FileTypes
+"autocmd FileType c,cpp,java,php autocmd BufWritePre <buffer> :%s/\s\+$//e
+
+" ================ Scrolling ====================
+set scrolloff=4        " start scrolling when near margins
+set sidescrolloff=15
+set sidescroll=1
+
+:set guioptions-=r     " remove right-hand scroll bar
+:set guioptions-=L     " remove left-hand scroll bar
+
+" ================ Searching ====================
+set ignorecase   " ignore cases when search...
+set smartcase    " ...unless type a capital
+set incsearch    " find the next match as we type
+set hlsearch     " highlight search
+
+" ================ Display ====================
+set t_Co=256
+set background=dark
+let $NVIM_TUI_ENABLE_CURSOR_SHAPE=1
+
+" ---------------- Java --------------------
+" download the syntax file at http://www.fleiner.com/vim/download.html
+let java_highlight_all=1
+let java_highlight_java_lang_ids=1
+let java_highlight_functions="style"
+let java_highlight_debug=1
+:hi link javaParen Comment
+
+" ---------------- Ruby --------------------
+let ruby_operators = 1
+let ruby_space_errors = 1
+
+" ---------------- Haskell --------------------
+autocmd Filetype haskell setlocal ts=2 sw=2 expandtab
+
+" ---------------- GUI --------------------
+if has("gui_running")
+	let g:airline_powerline_fonts=0
+    set guifont=Operator\ Mono\ Book:h12
+    set linespace=3
+    colorscheme one
+    let g:airline_theme = 'one'
+    if has("unix")
+      let s:uname = system("uname")
+      if s:uname == "Darwin\n"
+          let g:airline_powerline_fonts=1
+          set macligatures 
+          let g:airline_left_sep=''
+          let g:airline_right_sep=''
+      endif
+    endif
+
+" ---------------- CLI --------------------
+else
+    let html_no_rendering=1
+    set noshowmatch
+    set nocursorcolumn
+    set nocursorline
+    set lazyredraw
+    set linespace=3
+	let g:conoline_auto_enable = 0
+	set background=dark
+	colorscheme one
+	let g:airline_theme = 'one'
+    let g:airline_powerline_fonts=1
+endif
+
+" ================ Colorscheme ====================
+" ---------------- Solarized --------------------
+"" Solarized
+let g:solarized_termcolor = 256
+let g:solarized_contrast = "high"
+let g:solarized_visibility = "high"
+
+" ---------------- Hybrid --------------------
+let g:enable_bold_font = 1
+
+
+" =================================================
+" automatically reload vimrc when it is saved
+if has ('autocmd') " Remain compatible with earlier versions
+ augroup vimrc     " Source vim configuration upon save
+    autocmd! BufWritePost $MYVIMRC source % | echom "Reloaded " . $MYVIMRC | redraw | AirlineRefresh
+    autocmd! BufWritePost $MYGVIMRC if has('gui_running') | so % | echom "Reloaded " . $MYGVIMRC | endif | redraw | AirlineRefresh
+  augroup END
+endif " has autocmd
