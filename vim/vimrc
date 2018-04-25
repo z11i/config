@@ -10,8 +10,7 @@ Plugin 'scrooloose/syntastic'                            " Syntax checking hacks
 Plugin 'Valloric/YouCompleteMe'                          " A code-completion engine for Vim. Remember to recompile after update
 Plugin 'jeffkreeftmeijer/vim-numbertoggle'               " Toggles between relative and absolute line numbers automatically
 Plugin 'vim-scripts/Tabmerge'                            " Merge a tab's windows with the current tab
-Plugin 'jiangmiao/auto-pairs'                            " insert or delete brackets, parens, quotes in pair
-"Plugin 'Townk/vim-autoclose'                             " auto-close chars
+Plugin 'Raimondi/delimitMate'
 Plugin 'machakann/vim-swap'                              " Reorder delimited items.
 " ---------------- references --------------------
 Plugin 'rizzatti/dash.vim'                               " Search Dash.app from Vim
@@ -20,9 +19,9 @@ Plugin 'bling/vim-airline'                               " status/tabline
 Plugin 'majutsushi/tagbar'                               " displays tags
 Plugin 'scrooloose/nerdtree'                             " tree explorer
 Plugin 'miyakogi/conoline.vim'                           " Highlights the line of the cursor
-"Plugin 'gorodinskiy/vim-coloresque'                      " css/less/sass/html color preview for vim
-Plugin 'nathanaelkane/vim-indent-guides'                 " A Vim plugin for visually displaying indent levels in code
-Plugin 'kien/rainbow_parentheses.vim'                    " Better Rainbow Parentheses
+Plugin 'gorodinskiy/vim-coloresque'                      " css/less/sass/html color preview for vim
+Plugin 'luochen1990/rainbow'                             " Rainbow Parentheses Improved
+Plugin 'Yggdroot/indentLine'
 " ---------------- Special ---------------------------
 Plugin 'lervag/vimtex'                                   " latex in vim
 " ---------------- colorschemes --------------------
@@ -41,6 +40,7 @@ Plugin 'chriskempson/vim-tomorrow-theme'
 Plugin 'vim-airline/vim-airline-themes'
 Plugin 'NLKNguyen/papercolor-theme'
 Plugin 'rakr/vim-one'
+Plugin 'ayu-theme/ayu-vim'
 " ---------------- syntax files --------------------
 Plugin 'vim-jp/vim-java'
 Plugin 'toyamarinyon/vim-swift'
@@ -122,23 +122,42 @@ let g:ycm_python_binary_path = 'python'
 " ---------------- delimitMate setup --------------------
 let delimitMate_balance_matchpairs = 1
 let delimitMate_jump_expansion = 1
-let delimitMate_expand_cr = 1
-"let delimitMate_autoclose = 0
-
-" ---------------- AutoClose setup --------------------
-let g:AutoClosePairs = "() {} \""
-let g:AutoClosePairs_add = "<> |"
+let delimitMate_autoclose = 1
+let delimitMate_matchpairs = "(:),[:],{:},<:>"
+let delimitMate_quotes = "\" ' `"
+au FileType python let b:delimitMate_nesting_quotes = ['"']
 
 " ---------------- vim-clojure setup ---------------------
 let g:clojure_align_multiline_strings = 1
 let g:clojure_align_subforms = 1
 
-autocmd Syntax clojure EnableSyntaxExtension
-autocmd VimEnter *       RainbowParenthesesToggle
-autocmd Syntax   clojure RainbowParenthesesLoadRound
-autocmd Syntax   clojure RainbowParenthesesLoadSquare
-autocmd Syntax   clojure RainbowParenthesesLoadBraces
-
+" ---------------- rainbow ----------------
+let g:rainbow_active = 1
+let g:rainbow_conf = {
+            \	'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick'],
+            \	'ctermfgs': ['lightblue', 'lightyellow', 'lightcyan', 'lightmagenta'],
+            \	'operators': '_,_',
+            \	'parentheses': ['start=/(/ end=/)/ fold', 'start=/\[/ end=/\]/ fold', 'start=/{/ end=/}/ fold'],
+            \	'separately': {
+            \		'*': {},
+            \		'tex': {
+            \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/'],
+            \		},
+            \		'clips': {
+            \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+            \		},
+            \		'lisp': {
+            \			'guifgs': ['royalblue3', 'darkorange3', 'seagreen3', 'firebrick', 'darkorchid3'],
+            \		},
+            \		'vim': {
+            \			'parentheses': ['start=/(/ end=/)/', 'start=/\[/ end=/\]/', 'start=/{/ end=/}/ fold', 'start=/(/ end=/)/ containedin=vimFuncBody', 'start=/\[/ end=/\]/ containedin=vimFuncBody', 'start=/{/ end=/}/ fold containedin=vimFuncBody'],
+            \		},
+            \		'html': {
+            \			'parentheses': ['start=/\v\<((area|base|br|col|embed|hr|img|input|keygen|link|menuitem|meta|param|source|track|wbr)[ >])@!\z([-_:a-zA-Z0-9]+)(\s+[-_:a-zA-Z0-9]+(\=("[^"]*"|'."'".'[^'."'".']*'."'".'|[^ '."'".'"><=`]*))?)*\>/ end=#</\z1># fold'],
+            \		},
+            \		'css': 0,
+            \	}
+            \}
 " ================ General Config ====================
 set number                     " have linenumber
 set relativenumber             " relative to current line
@@ -150,6 +169,9 @@ set gcr=a:blinkon0             " Disable cursor blink
 set autoread                   " Reload files changed outside vim
 syntax on                      " turn on syntax highlighting
 set mouse=a                    " mouse mode
+
+" set clips syntax
+autocmd BufNewFile,BufRead *.clp   set syntax=clips
 
 " This makes vim act like all other editors, buffers can
 " exist in the background without being in a window.
@@ -218,24 +240,26 @@ let ruby_space_errors = 1
 autocmd Filetype haskell setlocal ts=2 sw=2 expandtab
 
 " ---------------- GUI --------------------
+set termguicolors
 if has("gui_running")
 	let g:airline_powerline_fonts=0
     set guifont=Operator\ Mono\ Book:h12
     set linespace=3
-    colorscheme one
-    let g:airline_theme = 'one'
+    let g:airline_theme = 'ayu'
+    let ayucolor="dark"
+    colorscheme ayu
     if has("unix")
-      let s:uname = system("uname")
-      if s:uname == "Darwin\n"
-          set macligatures 
-          let g:airline_powerline_fonts = 0
-          let g:airline_symbols_ascii = 1
-          let g:airline_symbols_maxlinenr = ''
-          let g:airline_left_sep = ''
-          let g:airline_left_alt_sep = ''
-          let g:airline_right_sep = ''
-          let g:airline_right_alt_sep = ''
-      endif
+        let s:uname = system("uname")
+        if s:uname == "Darwin\n"
+            set macligatures 
+            let g:airline_powerline_fonts = 0
+            let g:airline_symbols_ascii = 1
+            let g:airline_symbols_maxlinenr = ''
+            let g:airline_left_sep = ''
+            let g:airline_left_alt_sep = ''
+            let g:airline_right_sep = ''
+            let g:airline_right_alt_sep = ''
+        endif
     endif
 
 " ---------------- CLI --------------------
@@ -246,10 +270,10 @@ else
     set nocursorline
     set lazyredraw
     set linespace=3
+    let g:airline_powerline_fonts = 0
 	let g:conoline_auto_enable = 0
-	set background=dark
 	colorscheme PaperColor
-	let g:airline_theme = 'papercolor'
+    let g:airline_theme = 'papercolor'
     let g:airline_powerline_fonts=1
 endif
 
@@ -262,7 +286,6 @@ let g:solarized_visibility = "high"
 
 " ---------------- Hybrid --------------------
 let g:enable_bold_font = 1
-
 
 " =================================================
 " automatically reload vimrc when it is saved
